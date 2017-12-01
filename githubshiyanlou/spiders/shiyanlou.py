@@ -7,7 +7,7 @@ class ShiyanlouSpider(scrapy.Spider):
     allowed_domains = ['github.com']
     start_urls = []
     base_url = 'https://github.com/shiyanlou?tab=repositories&page={}'
-    for i in range(1, 5):
+    for i in range(4, 5):
         start_urls.append(base_url.format(i))
 
     def parse(self, response):
@@ -25,9 +25,18 @@ class ShiyanlouSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['commits'] = response.xpath('//*[@class="numbers-summary"]/li[1]/a/span/text()').extract()[0].strip()
-        item['branche'] = response.xpath('//*[@class="numbers-summary"]/li[2]/a/span/text()').extract()[0].strip()
-        item['releases'] = response.xpath('//*[@class="numbers-summary"]/li[3]/a/span/text()').extract()[0].strip()
+        try:
+            item['commits'] = response.xpath('//*[@class="numbers-summary"]/li[1]/a/span/text()').extract()[0].strip()
+        except:
+            item['commits'] = 0
+        try:
+            item['branche'] = response.xpath('//*[@class="numbers-summary"]/li[2]/a/span/text()').extract()[0].strip()
+        except:
+            item['branche'] = 0
+        try:
+            item['releases'] = response.xpath('//*[@class="numbers-summary"]/li[3]/a/span/text()').extract()[0].strip()
+        except:
+            item['releases'] = 0
         # print(item)
         yield item
         
